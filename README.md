@@ -63,6 +63,10 @@ python run.py
 - Git命令行工具
 - 管理员权限（用于监听网络事件）
 
+## 🚧 施工计划
+
+👉[点击查看](https://github.com/SaltedDoubao/GGPM-Python/blob/main/README_PLANS.md)
+
 ## 🏛️ 许可协议
 
 本项目采用 [MIT License](https://opensource.org/licenses/MIT) 开源许可证。 
