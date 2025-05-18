@@ -30,7 +30,7 @@ def create_executable():
         'pyinstaller',
         '--noconfirm',
         '--clean',
-        '--name=GitProxyMonitor',
+        '--name=GGMP-Python',
         '--icon=res/icon.ico',
         '--add-data=res/icon.ico;res',
         '--noconsole',
