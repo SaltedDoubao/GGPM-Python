@@ -14,7 +14,6 @@
 
 ```
 GGPM-Python/
-├── .git/               # Git 版本控制目录
 ├── .venv/              # Python 虚拟环境目录
 ├── config/             # 配置文件目录
 │   └── proxy_port.txt  # 代理端口设置
