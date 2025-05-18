@@ -1,11 +1,11 @@
 """
-Git代理IP监视器 - 打包脚本
-使用方法:
-    pip install pyinstaller
-    python setup.py
+请在虚拟环境中运行
+在命令行窗口输入以下命令:
+./venv/Scripts/activate
+python mkpackage.py
 """
+
 import os
-import sys
 import shutil
 import subprocess
 
@@ -61,18 +61,18 @@ def create_release_package():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     
     # 创建发布目录
-    release_dir = os.path.join(current_dir, "release")
+    release_dir = os.path.join(current_dir, "./package/release")
     if os.path.exists(release_dir):
         shutil.rmtree(release_dir)
     os.makedirs(release_dir)
     
     # 复制可执行文件
-    exe_path = os.path.join(current_dir, "dist", "GitProxyMonitor.exe")
+    exe_path = os.path.join(current_dir, "./package/dist", "GitProxyMonitor.exe")
     if os.path.exists(exe_path):
         shutil.copy(exe_path, os.path.join(release_dir, "GitProxyMonitor.exe"))
     
     # 创建配置目录
-    config_dir = os.path.join(release_dir, "config")
+    config_dir = os.path.join(release_dir, "./package/config")
     os.makedirs(config_dir)
     
     # 创建默认配置
@@ -80,28 +80,27 @@ def create_release_package():
         f.write("7890")
     
     # 复制图标
-    res_dir = os.path.join(release_dir, "res")
+    res_dir = os.path.join(release_dir, "./package/res")
     os.makedirs(res_dir)
     shutil.copy(os.path.join(current_dir, "res", "icon.ico"), os.path.join(res_dir, "icon.ico"))
     
     # 创建README文件
-    with open(os.path.join(release_dir, "README.txt"), "w", encoding="utf-8") as f:
-        f.write("""Git代理IP监视器
-=================
+    with open(os.path.join(release_dir, "./package/README.md"), "w", encoding="utf-8") as f:
+        f.write("""# Git代理IP监视器
 
 这是一个自动检测本地IP地址变化并更新Git代理设置的工具，带有图形界面。
 主要用于应对动态IP地址（如某些校园网）环境。
 
-使用方法：
+##使用方法：
 1. 双击 GitProxyMonitor.exe 启动程序
 2. 程序会以管理员权限运行并自动监控IP变化
 3. 可以在系统托盘找到程序图标
 
-配置：
+## 配置：
 - 可在界面中设置代理端口
 - 配置文件保存在 config/ 目录下
 
-系统要求：
+## 系统要求：
 - Windows 7/8/10/11
 - 管理员权限
 - Git命令行工具
