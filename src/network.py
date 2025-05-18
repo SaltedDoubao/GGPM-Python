@@ -38,6 +38,10 @@ class NetworkMonitor:
                            'veth', 'virbr', 'containers', 'vpn', 'loopback', 'tunnel', 
                            'wsltty', 'wsl']
 
+        # Keywords for known adapter types
+        wireless_keywords = ['wi', 'wlan', 'wireless', 'wifi']
+        wired_keywords = ['eth', 'realtek', 'broadcom', 'intel', 'nic']
+
         for iface, stats in interfaces_stats.items():
             if not stats.isup: # 跳过未启动的接口
                 continue
@@ -45,6 +49,17 @@ class NetworkMonitor:
             is_virtual = any(vk in iface.lower() for vk in virtual_keywords)
             if is_virtual: # 跳过虚拟网卡
                 continue
+            
+            # Check if adapter type is known (Wired or Wireless)
+            is_known_type = False
+            if any(wk in iface.lower() for wk in wireless_keywords):
+                is_known_type = True
+            elif any(wk in iface.lower() for wk in wired_keywords):
+                is_known_type = True
+            
+            if not is_known_type:
+                self.logger.debug(f"跳过未知类型的适配器: {iface}")
+                continue # 跳过未知类型的适配器
                 
             addresses = interfaces_addrs.get(iface, [])
             for addr in addresses:
@@ -53,7 +68,7 @@ class NetworkMonitor:
                         available_adapters.append(iface)
                         break # 找到一个IPv4地址就够了，不需要继续遍历该接口的其他地址
         
-        self.logger.info(f"可用的网络适配器: {available_adapters}")
+        self.logger.info(f"可用的网络适配器 (仅已知类型): {available_adapters}") # 更新日志信息
         return available_adapters
 
     def get_current_ip(self, selected_adapter_name=None):
@@ -87,6 +102,13 @@ class NetworkMonitor:
                                 iface_type = "无线"
                             elif any(ek in selected_adapter_name.lower() for ek in ['eth', 'realtek', 'broadcom', 'intel', 'nic']):
                                 iface_type = "有线"
+                                
+                            if iface_type == "未知类型":
+                                self.logger.warning(f"指定的适配器 {selected_adapter_name} 类型未知，将不使用。")
+                                # 当类型未知时，不再继续自动选择，而是明确返回无有效IP
+                                # 让调用者知道这个特定选择无效
+                                return None, "未知", "未知" # 修改点1：用户指定未知类型则返回
+                                
                             self.logger.info(f"从选定适配器 {selected_adapter_name} 获取到 IP: {addr.address}")
                             return addr.address, selected_adapter_name, iface_type
                     self.logger.warning(f"指定的适配器 {selected_adapter_name} 没有找到合适的IPv4地址。")
@@ -94,16 +116,19 @@ class NetworkMonitor:
                     self.logger.warning(f"指定的适配器 {selected_adapter_name} 未激活。")
             else:
                 self.logger.warning(f"指定的适配器 {selected_adapter_name} 不存在。")
-            # 如果指定的适配器无效或没有IP，可以选择返回None或执行自动选择逻辑
-            # 这里我们选择继续执行自动选择逻辑
+            # 如果指定的适配器无效或没有IP，或者类型未知，则不再继续自动选择逻辑
+            # 而是返回 None，让上层逻辑决定如何处理（例如提示用户重新选择）
+            # 如果希望在指定适配器无效时回退到自动选择，则删除下面的 return 语句
+            self.logger.info("指定的适配器无效、无IP或类型未知，不进行自动选择。")
+            return None, "未知", "未知" # 修改点2：确保指定适配器无效时不自动选择
 
-        self.logger.info("未指定适配器或指定适配器无效/无IP，执行自动选择逻辑。")
+        self.logger.info("未指定适配器，执行自动选择逻辑。")
         # 获取网络接口信息
         # interfaces_stats 和 interfaces_addrs 已经在函数开头获取
         
         physical_interfaces = []  # 物理网卡
         wireless_interfaces = []  # 无线网卡
-        other_interfaces = []     # 其他网卡
+        # other_interfaces = []     # 其他网卡 - 我们将不再使用这个列表来收集未知类型的适配器
         
         # 遍历所有活动接口
         for iface, stats in interfaces_stats.items():
@@ -127,11 +152,11 @@ class NetworkMonitor:
                     # 以太网/有线接口识别
                     elif any(ek in iface.lower() for ek in ['eth', 'realtek', 'broadcom', 'intel', 'nic']):
                         physical_interfaces.append((iface, addr.address, "有线"))
-                    else:
-                        other_interfaces.append((iface, addr.address, "其他"))
+                    # else: # 修改点3：不再将其他类型添加到列表中
+                    #     other_interfaces.append((iface, addr.address, "其他"))
         
         # 合并所有接口列表，按优先级排序
-        all_interfaces = physical_interfaces + wireless_interfaces + other_interfaces
+        all_interfaces = physical_interfaces + wireless_interfaces # 修改点4：不再包含 other_interfaces
         
         if not all_interfaces:
             self.logger.warning("未找到活动的物理网络接口")
@@ -161,11 +186,12 @@ class NetworkMonitor:
             # 其次选择有线网卡
             self.logger.info(f"使用物理有线网卡: {physical_interfaces[0][0]} ({physical_interfaces[0][1]})")
             return physical_interfaces[0][1], physical_interfaces[0][0], "有线"
-        elif other_interfaces:
-            # 最后选择其他类型网卡
-            self.logger.info(f"使用其他网卡: {other_interfaces[0][0]} ({other_interfaces[0][1]})")
-            return other_interfaces[0][1], other_interfaces[0][0], "其他"
+        # elif other_interfaces: # 修改点5：移除对 other_interfaces 的处理
+        #     # 最后选择其他类型网卡
+        #     self.logger.info(f"使用其他网卡: {other_interfaces[0][0]} ({other_interfaces[0][1]})")
+        #     return other_interfaces[0][1], other_interfaces[0][0], "其他"
         
+        self.logger.warning("自动选择逻辑未能找到合适的无线或有线网络接口。") # 新增日志
         return None, "未知", "未知"
     
     def start_monitoring(self):
