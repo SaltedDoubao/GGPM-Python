@@ -1,7 +1,7 @@
 """
 请在虚拟环境中运行
 在命令行窗口输入以下命令:
-.\venv\Scripts\activate
+.\.venv\Scripts\activate
 python mkpackage.py
 """
 
