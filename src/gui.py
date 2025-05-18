@@ -25,6 +25,17 @@ class GitProxyMonitorGUI:
         self.root.title("Git 代理 IP 监视器")
         self.root.geometry("560x350")
         self.root.resizable(False, False)
+
+        # 将窗口居中
+        self.root.update_idletasks() # 确保获取到正确的窗口大小
+        window_width = self.root.winfo_width()
+        window_height = self.root.winfo_height()
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        position_x = (screen_width // 2) - (window_width // 2)
+        position_y = (screen_height // 2) - (window_height // 2)
+        self.root.geometry(f"{window_width}x{window_height}+{position_x}+{position_y}")
+
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
         
         # 设置应用图标
@@ -108,7 +119,7 @@ class GitProxyMonitorGUI:
         self.start_stop_btn = tk.Button(self.root, text="开始监控", width=20, command=self.toggle_monitoring)
         self.start_stop_btn.grid(row=7, column=0, columnspan=2, padx=10, pady=(15, 10), sticky="w")
         
-        self.exit_btn = tk.Button(self.root, text="退出", width=20, command=self.on_close)
+        self.exit_btn = tk.Button(self.root, text="退出", width=20, command=self.exit_app)
         self.exit_btn.grid(row=7, column=1, columnspan=2, padx=10, pady=(15, 10), sticky="e")
         
     def setup_logger_handler(self):

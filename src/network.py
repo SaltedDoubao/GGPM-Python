@@ -153,14 +153,14 @@ class NetworkMonitor:
             self.logger.warning(f"无法确定默认网关接口: {e}")
         
         # 如果无法通过默认路由确定，按照预定优先级返回
-        if physical_interfaces:
-            # 优先选择有线网卡
-            self.logger.info(f"使用物理有线网卡: {physical_interfaces[0][0]} ({physical_interfaces[0][1]})")
-            return physical_interfaces[0][1], physical_interfaces[0][0], "有线"
-        elif wireless_interfaces:
-            # 其次选择无线网卡
+        if wireless_interfaces:
+            # 优先选择无线网卡
             self.logger.info(f"使用无线网卡: {wireless_interfaces[0][0]} ({wireless_interfaces[0][1]})")
             return wireless_interfaces[0][1], wireless_interfaces[0][0], "无线"
+        elif physical_interfaces:
+            # 其次选择有线网卡
+            self.logger.info(f"使用物理有线网卡: {physical_interfaces[0][0]} ({physical_interfaces[0][1]})")
+            return physical_interfaces[0][1], physical_interfaces[0][0], "有线"
         elif other_interfaces:
             # 最后选择其他类型网卡
             self.logger.info(f"使用其他网卡: {other_interfaces[0][0]} ({other_interfaces[0][1]})")
