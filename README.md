@@ -8,43 +8,54 @@
 
 - 自动检测IP地址变化并更新Git代理
 - 智能识别物理网卡和优先连接
-- 图形界面显示状态和设置
 - 可自定义代理端口
-- 系统托盘支持
 
 ## 📁 项目结构
 
 ```
-Git-Global-Proxy-Modifier/
-├── src/                # 源代码目录
-│   ├── __init__.py     # 初始化文件
-│   ├── main.py         # 主程序入口
-│   ├── network.py      # 网络监控模块
-│   ├── git_proxy.py    # Git代理操作模块
-│   ├── config.py       # 配置管理模块
-│   └── gui.py          # 图形界面模块
-├── res/                # 资源文件
-│   └── icon.ico        # 程序图标
-├── config/             # 配置文件
+GGPM-Python/
+├── .git/               # Git 版本控制目录
+├── .venv/              # Python 虚拟环境目录
+├── config/             # 配置文件目录
 │   └── proxy_port.txt  # 代理端口设置
-├── run.py              # 启动脚本
-├── start_monitor.bat   # 批处理启动文件
+├── logs/               # 日志文件目录
+├── res/                # 资源文件目录
+│   └── icon.ico        # 程序图标
+├── src/                # 源代码目录
+│   ├── __pycache__     # 项目缓存文件
+│   ├── __init__.py     # 包初始化文件
+│   ├── config.py       # 配置管理模块
+│   ├── git_proxy.py    # Git代理操作模块
+│   ├── gui.py          # 图形界面模块
+│   ├── main.py         # 主程序入口
+│   └── network.py      # 网络监控模块
+├── LICENSE             # 项目许可证文件
 ├── mkpackage.py        # 打包脚本
-└── README.md           # 项目说明
+├── README.md           # 项目说明文件
+├── requirements.txt    # Python 依赖包列表
+├── run.py              # 开发模式启动脚本
+└── start_monitor.bat   # 批处理启动文件 (Windows)
 ```
 
 ## 🚀 使用方法
 
 ### 直接运行
-1. 安装依赖：`pip install -r requirements.txt`
-2. 运行程序：`python run.py` 或双击 `start_monitor.bat`
-3. 程序会以管理员权限启动并自动监听IP变化
-4. 可以在系统托盘找到程序图标
+**1. 通过 python 文件启动**
+* 在项目根目录下打开命令提示符
+* 激活虚拟环境
+```
+./venv/Scripts/activate
+```
+* 运行python文件
+```
+python run.py
+```
+**2. 通过bat脚本启动**
+* 点击 start_monitor.bat
 
-### 打包为可执行文件
-1. 安装PyInstaller：`pip install pyinstaller`
-2. 运行打包脚本：`python setup.py`
-3. 打包完成后，可在`release`目录中找到可执行文件和相关资源
+### 下载可执行文件
+1. 在 [Release](https://github.com/SaltedDoubao/GGPM-Python/releases) 中获取可执行文件(GGPM-Python.exe)
+2. 点击运行
 
 ## 💻 系统要求
 
