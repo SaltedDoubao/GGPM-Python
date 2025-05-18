@@ -44,7 +44,7 @@ GGPM-Python/
 * 在项目根目录下打开命令提示符
 * 激活虚拟环境
 ```
-.\venv\Scripts\activate
+.\.venv\Scripts\activate
 ```
 * 运行python文件
 ```
