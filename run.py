@@ -1,6 +1,3 @@
-"""
-Git代理IP监视器 - 启动脚本
-"""
 import os
 import sys
 
