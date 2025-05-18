@@ -61,18 +61,18 @@ def create_release_package():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     
     # 创建发布目录
-    release_dir = os.path.join(current_dir, "./package/release")
+    release_dir = os.path.join(current_dir, "./release")
     if os.path.exists(release_dir):
         shutil.rmtree(release_dir)
     os.makedirs(release_dir)
     
     # 复制可执行文件
-    exe_path = os.path.join(current_dir, "./package/dist", "GitProxyMonitor.exe")
+    exe_path = os.path.join(current_dir, "./dist", "GGMP-Python.exe")
     if os.path.exists(exe_path):
-        shutil.copy(exe_path, os.path.join(release_dir, "GitProxyMonitor.exe"))
+        shutil.copy(exe_path, os.path.join(release_dir, "GGMP-Python.exe"))
     
     # 创建配置目录
-    config_dir = os.path.join(release_dir, "./package/config")
+    config_dir = os.path.join(release_dir, "./config")
     os.makedirs(config_dir)
     
     # 创建默认配置
@@ -80,13 +80,13 @@ def create_release_package():
         f.write("7890")
     
     # 复制图标
-    res_dir = os.path.join(release_dir, "./package/res")
+    res_dir = os.path.join(release_dir, "./res")
     os.makedirs(res_dir)
     shutil.copy(os.path.join(current_dir, "res", "icon.ico"), os.path.join(res_dir, "icon.ico"))
     
     # 创建README文件
-    with open(os.path.join(release_dir, "./package/README.md"), "w", encoding="utf-8") as f:
-        f.write("""# Git代理IP监视器
+    with open(os.path.join(release_dir, "./README.md"), "w", encoding="utf-8") as f:
+        f.write("""# 由Python实现的Git代理IP监视器(Git-Global-Proxy-Modifier-Python)
 
 这是一个自动检测本地IP地址变化并更新Git代理设置的工具，带有图形界面。
 主要用于应对动态IP地址（如某些校园网）环境。
