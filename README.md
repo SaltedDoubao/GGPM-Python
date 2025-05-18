@@ -29,7 +29,7 @@ Git-Global-Proxy-Modifier/
 │   └── proxy_port.txt  # 代理端口设置
 ├── run.py              # 启动脚本
 ├── start_monitor.bat   # 批处理启动文件
-├── setup.py            # 打包脚本
+├── mkpackage.py        # 打包脚本
 └── README.md           # 项目说明
 ```
 
